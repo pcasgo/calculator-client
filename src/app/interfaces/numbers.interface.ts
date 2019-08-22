@@ -1,5 +1,5 @@
 
-export class NumbersDto {
+export class NumbersI {
     numberOne: number;
     numberTwo: number;
 }

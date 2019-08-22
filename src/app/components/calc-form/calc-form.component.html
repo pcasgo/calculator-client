@@ -4,12 +4,12 @@
         <small>Calculadora =)</small>
       </div>
       <div class="row" id="result">
-        <form name="calc">
+        <form (sumit)='submitNumbers()' name="calc">
           <input type="text" class="screen text-right" name="result" readonly>
         </form>
       </div>
       <div class="row">
-        <button id="allClear" type="button" class="btn btn-danger" onclick="clearScreen()">AC</button>
+        <button id="allClear" type="button" class="btn btn-danger" onclick="clearScreen()" ng-click>AC</button>
         <button id="clear" type="button" class="btn btn-warning" onclick="clearScreen()">CE</button>
         <button id="%" type="button" class="btn btn-info" onclick="myFunction(this.id)">%</button>
         <button id="/" type="button" class="btn btn-info" onclick="myFunction(this.id)">÷</button>

@@ -1,4 +1,6 @@
+import { CalcFormService } from './../../services/calc-form.service';
 import { Component, OnInit } from '@angular/core';
+import { NumbersI } from 'src/app/interfaces/numbers.interface';
 
 @Component({
   selector: 'app-calc-form',
@@ -7,12 +9,22 @@ import { Component, OnInit } from '@angular/core';
 })
 export class CalcFormComponent implements OnInit {
 
-  constructor() { }
+  constructor(private calcFormService: CalcFormService) { }
 
   ngOnInit() {
-    
+
   }
 
-  
+  myFunction(id) {
+    console.log(id);
+  }
+
+
+  add(numbers: NumbersI) {
+    this.calcFormService.add(numbers).subscribe(
+      res => console.log(res),
+      err => console.log(err)
+    );
+  }
 
 }
