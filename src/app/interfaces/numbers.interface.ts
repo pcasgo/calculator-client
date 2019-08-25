@@ -1,5 +1,5 @@
 
 export class NumbersI {
-    numberOne: number;
-    numberTwo: number;
+    numberOne: string;
+    numberTwo: string;
 }
