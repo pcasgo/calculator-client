@@ -1,42 +1,43 @@
 <div class="container text-center" id="calc">
-    <div class="calcBG text-center">
-      <div class="row">
-        <small>Calculadora =)</small>
-      </div>
-      <div class="row" id="resultc">
-        <form (sumit)='submitNumbers()' name="calc">
-          <input type="text" class="screen text-right" value="{{result}}" name="result" readonly>
-        </form>
-      </div>
-      <div class="row">
-        <button id="allClear" type="button" class="btn btn-danger" (click)="clearScreen()">AC</button>
-        <button id="clear" type="button" class="btn btn-warning" (click)="clearScreen()">CE</button>
-        <button id="%" type="button" class="btn btn-info" (click)="keyPressCalculator('%')">%</button>
-        <button id="/" type="button" class="btn btn-info" (click)="keyPressCalculator('/')">÷</button>
-      </div>
-      <div class="row">
-        <button id="7" type="button" class="btn btn-info" (click)="keyPressCalculator('7')">7</button>
-        <button id="8" type="button" class="btn btn-info" (click)="keyPressCalculator('8')">8</button>
-        <button id="9" type="button" class="btn btn-info" (click)="keyPressCalculator('9')">9</button>
-        <button id="*" type="button" class="btn btn-info" (click)="keyPressCalculator('*')">x</button>
-      </div>
-      <div class="row">
-        <button id="4" type="button" class="btn btn-info" (click)="keyPressCalculator('4')">4</button>
-        <button id="5" type="button" class="btn btn-info" (click)="keyPressCalculator('5')">5</button>
-        <button id="6" type="button" class="btn btn-info" (click)="keyPressCalculator('6')">6</button>
-        <button id="-" type="button" class="btn btn-info" (click)="keyPressCalculator('-')">-</button>
-      </div>
-      <div class="row">
-        <button id="1" type="button" class="btn btn-info" (click)="keyPressCalculator('1')">1</button>
-        <button id="2" type="button" class="btn btn-info" (click)="keyPressCalculator('2')">2</button>
-        <button id="3" type="button" class="btn btn-info" (click)="keyPressCalculator('3')">3</button>
-        <button id="+" type="button" class="btn btn-info" (click)="keyPressCalculator('+')">+</button>
-      </div>
-      <div class="row">
-        <button id="0" type="button" class="btn btn-info" (click)="keyPressCalculator('0')">0</button>
-        <button id="." type="button" class="btn btn-info" (click)="keyPressCalculator('.')">.</button>
-        <button id="equals" type="button" class="btn btn-success" (click)="calculate()">=</button>
-        <button id="blank" type="button" class="btn btn-info">&nbsp;</button>
-      </div>
+  <div class="calcBG text-center">
+    <div class="row">
+      <small>Calculadora =)</small>
+    </div>
+    <div class="row" id="resultc">
+      <form (sumit)='submitNumbers()' name="calc">
+        <input type="text" class="screen text-right" value="{{result}}" name="result" readonly>
+      </form>
+    </div>
+    <div class="row">
+      <button id="blank" type="button" class="btn btn-info">&nbsp;</button>
+      <button id="blank" type="button" class="btn btn-info">&nbsp;</button>
+      <button id="allClear" type="button" class="btn btn-danger" (click)="clearScreen()">AC</button>
+      <button id="clear" type="button" class="btn btn-warning" (click)="clearScreen()">CE</button>
+    </div>
+    <div class="row">
+      <button id="7" type="button" class="btn btn-info" (click)="keyPressCalculator('7')">7</button>
+      <button id="8" type="button" class="btn btn-info" (click)="keyPressCalculator('8')">8</button>
+      <button id="9" type="button" class="btn btn-info" (click)="keyPressCalculator('9')">9</button>
+      <button id="/" type="button" class="btn btn-info" (click)="keyPressCalculator('/')">÷</button>
+
+    </div>
+    <div class="row">
+      <button id="4" type="button" class="btn btn-info" (click)="keyPressCalculator('4')">4</button>
+      <button id="5" type="button" class="btn btn-info" (click)="keyPressCalculator('5')">5</button>
+      <button id="6" type="button" class="btn btn-info" (click)="keyPressCalculator('6')">6</button>
+      <button id="*" type="button" class="btn btn-info" (click)="keyPressCalculator('*')">x</button>
+    </div>
+    <div class="row">
+      <button id="1" type="button" class="btn btn-info" (click)="keyPressCalculator('1')">1</button>
+      <button id="2" type="button" class="btn btn-info" (click)="keyPressCalculator('2')">2</button>
+      <button id="3" type="button" class="btn btn-info" (click)="keyPressCalculator('3')">3</button>
+      <button id="-" type="button" class="btn btn-info" (click)="keyPressCalculator('-')">-</button>
+    </div>
+    <div class="row">
+      <button id="0" type="button" class="btn btn-info" (click)="keyPressCalculator('0')">0</button>
+      <button id="." type="button" class="btn btn-info" (click)="keyPressCalculator('.')">.</button>
+      <button id="+" type="button" class="btn btn-info" (click)="keyPressCalculator('+')">+</button>
+      <button id="equals" type="button" class="btn btn-success" (click)="calculate()">=</button>
     </div>
   </div>
+</div>
