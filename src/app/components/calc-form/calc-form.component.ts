@@ -12,6 +12,7 @@ export class CalcFormComponent implements OnInit {
   keys: string[] = [];
   result = '';
   numbersDto: NumbersI[];
+  json = '';
   constructor(private calcFormService: CalcFormService,
   ) { }
 
@@ -34,12 +35,7 @@ export class CalcFormComponent implements OnInit {
   }
 
   calculate() {
-    // console.log("CALCULAR: ", this.keys);
-    if (this.isNotValid(this.keys)) {
-      this.result = 'error de sintaxis';
-    } else {
-      console.log('operacion valida');
-    }
+    this.sendData(this.keys);
     // Procedimiento
     // 3 - 4 * 5 + 6 / 5 * 8
     // 3 - 20 + 6 / 5 * 8
@@ -48,98 +44,72 @@ export class CalcFormComponent implements OnInit {
     // 3 -20 + 9.6
   }
 
-  isNotValid(numbers) {
+  sendData(numbers) {
+    let one = ''; let two = ''; let oper = '';
+    const dto = new NumbersI();
     // valido si el primer y el ultimo caracter del arreglo NO son numeros
     if (isNaN(numbers[0]) || isNaN(numbers[numbers.length - 1])) {
       return true;
     } else {
-      //Busco si hay una multplicacion o una division
-      const add = numbers.indexOf('+');
-      const substract = numbers.indexOf('-');
-      const multiply = numbers.indexOf('*');
-      const divide = numbers.indexOf('/');
-      if (multiply > -1) {
-        if (divide > -1) {
-          console.log('AQUI');
-          // tengo multiplicacion y division
-          if (multiply > divide) {
-            this.operation(numbers, divide);
+      for (let i = 0; i <= numbers.length - 1; i++) {
+        //Valido si ya se asigno una operacion
+        if (oper !== '') {
+          two += numbers[i];
+        } else {
+          // Guardo la operacion
+          if (isNaN(numbers[i])) {
+            oper = numbers[i];
           } else {
-            this.operation(numbers, multiply);
+            one += numbers[i];
           }
         }
-      } else {
-        //no tengo multiplicacion pero valido si hay division
-        if (divide > -1) {
-          this.operation(numbers, divide);
-        } else {
-          // solo hay suma y resta
-        }
       }
+      dto.numberOne = one;
+      dto.numberTwo = two;
+      // Pendiente obtener del response resultado para mostrarlo en pantalla
+      const res = this.calculateOperation(dto, oper);
+      res.then(function (value) {
+        console.log(value);
+      });
+      this.keys = [];
+      this.result = '';
     }
+  }
 
+  calculateOperation(dto, oper) {
+    switch (oper) {
+      case '+':
+        return new Promise((resolve, reject) => {
+          this.calcFormService.add(dto).subscribe(
+            res => resolve(res),
+            err => reject(err)
+          );
+        });
+      case '-':
+        return new Promise((resolve, reject) => {
+          this.calcFormService.substract(dto).subscribe(
+            res => resolve(res),
+            err => reject(err)
+          );
+        });
+      case '/':
+        return new Promise((resolve, reject) => {
+          this.calcFormService.divide(dto).subscribe(
+            res => resolve(res),
+            err => reject(err)
+          );
+        });
+      case '*':
+        return new Promise((resolve, reject) => {
+          this.calcFormService.multiply(dto).subscribe(
+            res => resolve(res),
+            err => reject(err)
+          );
+        });
+    }
   }
 
   reverseChain(chain) {
     return chain.split('').reverse().join('');
-  }
-
-  add(numbers: NumbersI) {
-    this.calcFormService.add(numbers).subscribe(
-      res => console.log(res),
-      err => console.log(err)
-    );
-  }
-
-  operation(numbers, divide) {
-    let dividendo = '';
-    let divisor = '';
-    let operacion = '';
-    let inicio;
-    let fin;
-    for (let i = divide - 1; i >= 0; i--) {
-      // Valido si el primer caracter obtenido es una operacion y si es true es invalida la operacion
-      if (isNaN(numbers[i]) && (i === (divide - 1))) {
-        break;
-      }
-      // guardo el valor hacia atras hasta encontrar otra operacion
-      if (isNaN(numbers[i])) {
-        operacion = numbers[i];
-        inicio = i;
-        break;
-      } else {
-        dividendo += numbers[i];
-      }
-    }
-    // invierto el valor obtenido ya que el for es en reversa
-    dividendo = this.reverseChain(dividendo);
-    // guardo el valor hacia adelante hasta encontrar otra operacion
-    for (let i = divide + 1; i <= numbers.length - 1; i++) {
-      if (isNaN(numbers[i]) && (i === (divide + 1))) {
-        break;
-      }
-      if (isNaN(numbers[i])) {
-        operacion = numbers[i];
-        fin = i;
-        break;
-      } else {
-        divisor += numbers[i];
-      }
-    }
-    let arr = '';
-    let primeraParte = '';
-    let segundaParte = '';
-    console.log('test: ', fin + ' ' + inicio);
-    for (let i = inicio + 1; i <= fin - 1; i++) {
-      arr += numbers[i];
-    }
-    for (let i = 0; i <= numbers.length - 1; i++) {
-      if (i < inicio + 1) {
-        primeraParte += numbers[i];
-      } else if (i > fin - 1) {
-        segundaParte += numbers[i];
-      }
-    }
-    //return this.calcFormService.divide(dto);
   }
 }
