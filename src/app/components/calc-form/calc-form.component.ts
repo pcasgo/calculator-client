@@ -14,8 +14,8 @@ export class CalcFormComponent implements OnInit {
   numbersDto: NumbersI[];
   primeraParteCadena = 0;
   segundaParteCadena = 0;
-  // cadena = '12+768/7*6*7+5/2/4+8';
-  reGex = new RegExp('[+/*-]', 'gim');
+  reGexAddSub = new RegExp('[+-]', 'gim');
+  reGexDivMul = new RegExp('[/*]', 'gim');
   constructor(private calcFormService: CalcFormService,
   ) { }
 
@@ -37,41 +37,49 @@ export class CalcFormComponent implements OnInit {
   }
 
   calculate() {
-    //this.sendData(this.keys);
-    this.result = this.test(this.result);
-    console.log(this.result);
+    // this.sendData(this.keys);
+    this.result = '3-2*6/9*4+8/2-6*7';
+    console.log('cadena inicial: ', this.result);
+    while (this.result.match(this.reGexDivMul) !== null) {
+      // console.log('ejecutando: ', this.result);
+      this.result = this.findDivAndMul(this.result);
+    }
+    console.log('cadena final div y mul: ', this.result);
+    // while (this.result.match(this.reGexAddSub) !== null) {
+    //   console.log('sumas y restas: ', this.result);
+    //   this.result = this.findAddAndSub(this.result);
+    // }
+    // console.log('cadena final add y sub: ', this.result);
+    this.findAddAndSub(this.result);
   }
 
-  sendData(numbers) {
-    let one = ''; let two = ''; let oper = '';
-    const dto = new NumbersI();
-    // valido si el primer y el ultimo caracter del arreglo NO son numeros
-    if (isNaN(numbers[0]) || isNaN(numbers[numbers.length - 1])) {
-      return true;
-    } else {
-      for (let i = 0; i <= numbers.length - 1; i++) {
-        //Valido si ya se asigno una operacion
-        if (oper !== '') {
-          two += numbers[i];
-        } else {
-          // Guardo la operacion
-          if (isNaN(numbers[i])) {
-            oper = numbers[i];
-          } else {
-            one += numbers[i];
-          }
-        }
+  findAddAndSub(cadena) {
+    let newCadena = '';
+    let newValue = '';
+    let operation = '';
+    console.log('AQUI !!!!: ', cadena);
+    for (let i = 0; i <= cadena.length - 1; i++) {
+      if (isNaN(cadena[i]) && cadena[i] === '+' || cadena[i] === '-') {
+        operation = cadena[i];
+        // // Busco la primera operacion que sea de tipo: [+ o -]
+        const dto = new NumbersI();
+        dto.numberOne = this.obtienePrimerNumeroOperacion(cadena, cadena[i]);
+        dto.numberTwo = this.obtieneSegundoNumeroOperacion(cadena, cadena[i]);
+        // // tslint:disable-next-line: no-eval
+        console.log('eval: ', dto.numberOne + operation + dto.numberTwo);
+        // // tslint:disable-next-line: no-eval
+        newValue = eval(dto.numberOne + operation + dto.numberTwo);
+        console.log('newValue: ', newValue);
+        // // newValue = this.calculateOperation(dto, operation);
+        newCadena = this.actualizaCadena(this.primeraParteCadena, this.segundaParteCadena, newValue, cadena);
+        this.primeraParteCadena = 0;
+        this.segundaParteCadena = 0;
+        console.log('newCadena: ', newCadena);
+        // Al encontrar la primera + o - detengo el bucle
+        break;
       }
-      dto.numberOne = one;
-      dto.numberTwo = two;
-      // Pendiente obtener del response resultado para mostrarlo en pantalla
-      const res = this.calculateOperation(dto, oper);
-      res.then(function (value) {
-        console.log(value);
-      });
-      this.keys = [];
-      this.result = '';
     }
+    return newCadena;
   }
 
   calculateOperation(dto, oper) {
@@ -111,49 +119,52 @@ export class CalcFormComponent implements OnInit {
     return chain.split('').reverse().join('');
   }
 
-  test(cadena) {
-    if (!cadena.match(this.reGex)) {
-      console.log('aca');
-      return 'ok';
-    } else {
-      console.log('aca 2');
-      // let cadena = '12+768/7*6*7+5/2/4+8';
-      // tomo todos los valores anteriores a mult o div y todos los posteriores y resuelvo
-      let newCadena = '';
-      let newValue = '';
-      let operation = '';
-      for (let i = 0; i <= cadena.length - 1; i++) {
-        if (cadena[i] === '/' || cadena[i] === '*') {
-          operation = cadena[i];
-          // Busco la primera operacion que sea de tipo: [/ o *]
-          const dto = new NumbersI();
-          dto.numberOne = this.obtienePrimerNumeroOperacion(cadena, cadena[i]);
-          dto.numberTwo = this.obtieneSegundoNumeroOperacion(cadena, cadena[i]);
-          // tslint:disable-next-line: no-eval
-          // console.log('eval: ', dto.numberOne + operation + dto.numberTwo);
-          // tslint:disable-next-line: no-eval
-          newValue = eval(dto.numberOne + operation + dto.numberTwo).toFixed(0);
-          // console.log('newValue: ', newValue);
-          // newValue = this.calculateOperation(dto, operation);
-          newCadena = this.actualizaCadena(this.primeraParteCadena, this.segundaParteCadena, newValue, cadena);
-          this.primeraParteCadena = 0;
-          this.segundaParteCadena = 0;
-          // console.log('newCadena: ', newCadena);
-          // Al encontrar la primera / o * detengo el bucle
-          break;
-        } else {
-          // Aqui solo hay sumas y restas
-        }
+  findDivAndMul(cadena) {
+    // tomo todos los valores anteriores a mult o div y todos los posteriores y resuelvo
+    let newCadena = '';
+    let newValue = '';
+    let operation = '';
+    for (let i = 0; i <= cadena.length - 1; i++) {
+      if (isNaN(cadena[i]) && cadena[i] === '/' || cadena[i] === '*') {
+        operation = cadena[i];
+        // Busco la primera operacion que sea de tipo: [/ o *]
+        const dto = new NumbersI();
+        dto.numberOne = this.obtienePrimerNumeroOperacion(cadena, cadena[i]);
+        dto.numberTwo = this.obtieneSegundoNumeroOperacion(cadena, cadena[i]);
+        // tslint:disable-next-line: no-eval
+        //  console.log('eval: ', dto.numberOne + operation + dto.numberTwo);
+        // tslint:disable-next-line: no-eval
+        newValue = eval(dto.numberOne + operation + dto.numberTwo);
+        // console.log('newValue: ', newValue);
+        // newValue = this.calculateOperation(dto, operation);
+        newCadena = this.actualizaCadena(this.primeraParteCadena, this.segundaParteCadena, newValue, cadena);
+        this.primeraParteCadena = 0;
+        this.segundaParteCadena = 0;
+        // console.log('newCadena: ', newCadena);
+        // Al encontrar la primera / o * detengo el bucle
+        break;
       }
-      return newCadena;
     }
+    return newCadena;
   }
 
   obtienePrimerNumeroOperacion(cadena, indice) {
     let one = '';
+    // if (indice === '-' && cadena.indexOf(indice) === 0) {
+    //   for (let i = cadena.indexOf(indice) + 1; i <= cadena.length - 1; i++) {
+    //     if (isNaN(cadena[i]) && cadena[i] !== '.' && cadena[i] !== ',') {
+    //       this.primeraParteCadena = i;
+    //       break;
+    //     } else {
+    //       // Si es numero voy guardando como parte de la operacion
+    //       one += cadena[i];
+    //     }
+    //   }
+    //   one = indice;
+    // } else {
     for (let i = cadena.indexOf(indice) - 1; i >= 0; i--) {
       // Si no es numero corto el recorrido y guardo la primera parte de la operacion
-      if (isNaN(cadena[i])) {
+      if (isNaN(cadena[i]) && cadena[i] !== '.' && cadena[i] !== ',') {
         this.primeraParteCadena = i;
         break;
       } else {
@@ -161,6 +172,7 @@ export class CalcFormComponent implements OnInit {
         one += cadena[i];
       }
     }
+    // }
     one = this.reverseChain(one);
     return one;
   }
@@ -169,7 +181,7 @@ export class CalcFormComponent implements OnInit {
     let two = '';
     for (let i = cadena.indexOf(indice) + 1; i <= cadena.length - 1; i++) {
       // Guardo numeros siguientes de la operacion
-      if (isNaN(cadena[i])) {
+      if (isNaN(cadena[i]) && cadena[i] !== '.' && cadena[i] !== ',') {
         this.segundaParteCadena = i;
         break;
       } else {
@@ -209,5 +221,37 @@ export class CalcFormComponent implements OnInit {
       }
     }
     return newCadena;
+  }
+
+  sendData(numbers) {
+    let one = ''; let two = ''; let oper = '';
+    const dto = new NumbersI();
+    // valido si el primer y el ultimo caracter del arreglo NO son numeros
+    if (isNaN(numbers[0]) || isNaN(numbers[numbers.length - 1])) {
+      return true;
+    } else {
+      for (let i = 0; i <= numbers.length - 1; i++) {
+        //Valido si ya se asigno una operacion
+        if (oper !== '') {
+          two += numbers[i];
+        } else {
+          // Guardo la operacion
+          if (isNaN(numbers[i])) {
+            oper = numbers[i];
+          } else {
+            one += numbers[i];
+          }
+        }
+      }
+      dto.numberOne = one;
+      dto.numberTwo = two;
+      // Pendiente obtener del response resultado para mostrarlo en pantalla
+      const res = this.calculateOperation(dto, oper);
+      res.then(function (value) {
+        console.log(value);
+      });
+      this.keys = [];
+      this.result = '';
+    }
   }
 }
