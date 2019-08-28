@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class CalcFormService {
 
-  BASE_URL = 'http://localhost:3000';
+  BASE_URL = 'https://calculator-back.herokuapp.com';
   constructor(private http: HttpClient) { }
 
   add(numbers: NumbersI): Observable<number> {
@@ -25,6 +25,5 @@ export class CalcFormService {
 
   multiply(numbers: NumbersI): Observable<number> {
     return this.http.post<number>(`${this.BASE_URL}/multiply`, numbers);
-
   }
 }
