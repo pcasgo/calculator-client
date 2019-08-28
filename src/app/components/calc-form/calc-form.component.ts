@@ -14,7 +14,7 @@ export class CalcFormComponent implements OnInit {
   numbersDto: NumbersI[];
   primeraParteCadena = 0;
   segundaParteCadena = 0;
-  cadena = '12+768/7*6*7+5/2/4+8';
+  // cadena = '12+768/7*6*7+5/2/4+8';
   reGex = new RegExp('[+/*-]', 'gim');
   constructor(private calcFormService: CalcFormService,
   ) { }
@@ -28,7 +28,6 @@ export class CalcFormComponent implements OnInit {
     }
     this.result += keyPrres;
     this.keys.push(keyPrres);
-    console.log(this.keys);
   }
 
   clearScreen() {
@@ -38,8 +37,9 @@ export class CalcFormComponent implements OnInit {
   }
 
   calculate() {
-    this.sendData(this.keys);
-    this.test(this.result);
+    //this.sendData(this.keys);
+    this.result = this.test(this.result);
+    console.log(this.result);
   }
 
   sendData(numbers) {
@@ -112,37 +112,40 @@ export class CalcFormComponent implements OnInit {
   }
 
   test(cadena) {
-    console.log('cadena: ', cadena);
-    if (cadena.match(this.reGex)) {
-      return true;
+    if (!cadena.match(this.reGex)) {
+      console.log('aca');
+      return 'ok';
     } else {
+      console.log('aca 2');
       // let cadena = '12+768/7*6*7+5/2/4+8';
       // tomo todos los valores anteriores a mult o div y todos los posteriores y resuelvo
       let newCadena = '';
       let newValue = '';
       let operation = '';
-      for (let i = 0; i <= this.cadena.length - 1; i++) {
-        if (this.cadena[i] === '/' || this.cadena[i] === '*') {
-          operation = this.cadena[i];
+      for (let i = 0; i <= cadena.length - 1; i++) {
+        if (cadena[i] === '/' || cadena[i] === '*') {
+          operation = cadena[i];
           // Busco la primera operacion que sea de tipo: [/ o *]
-          console.log('aqui: ', this.cadena.indexOf(this.cadena[i]));
           const dto = new NumbersI();
-          dto.numberOne = this.obtienePrimerNumeroOperacion(this.cadena, this.cadena[i]);
-          dto.numberTwo = this.obtieneSegundoNumeroOperacion(this.cadena, this.cadena[i]);
+          dto.numberOne = this.obtienePrimerNumeroOperacion(cadena, cadena[i]);
+          dto.numberTwo = this.obtieneSegundoNumeroOperacion(cadena, cadena[i]);
           // tslint:disable-next-line: no-eval
-          console.log('eval: ', eval(dto.numberOne + operation + dto.numberTwo));
+          // console.log('eval: ', dto.numberOne + operation + dto.numberTwo);
           // tslint:disable-next-line: no-eval
-          newValue = eval(dto.numberOne + operation + dto.numberTwo).toFixed(2);
+          newValue = eval(dto.numberOne + operation + dto.numberTwo).toFixed(0);
+          // console.log('newValue: ', newValue);
           // newValue = this.calculateOperation(dto, operation);
-          newCadena = this.actualizaCadena(this.primeraParteCadena, this.segundaParteCadena, newValue);
-          console.log('newCadena: ', newCadena);
+          newCadena = this.actualizaCadena(this.primeraParteCadena, this.segundaParteCadena, newValue, cadena);
+          this.primeraParteCadena = 0;
+          this.segundaParteCadena = 0;
+          // console.log('newCadena: ', newCadena);
           // Al encontrar la primera / o * detengo el bucle
           break;
         } else {
           // Aqui solo hay sumas y restas
         }
       }
-      return this.test(newCadena);
+      return newCadena;
     }
   }
 
@@ -177,15 +180,34 @@ export class CalcFormComponent implements OnInit {
     return two;
   }
 
-  actualizaCadena(indiceInicio, indiceFin, newValue) {
+  actualizaCadena(indiceInicio, indiceFin, newValue, cadena) {
     let leftPart = '';
     let rightPart = '';
-    for (let i = 0; i <= indiceInicio; i++) {
-      leftPart += this.cadena[i];
+    let newCadena;
+    // Aqui verifico si el indice es mayor a 0 significa que hay algo despues de la operacion
+    if (indiceInicio > 0) {
+      for (let i = 0; i <= indiceInicio; i++) {
+        leftPart += cadena[i];
+      }
     }
-    for (let i = indiceFin; i <= this.cadena.length - 1; i++) {
-      rightPart += this.cadena[i];
+    // Uno las partes de la nueva cadena formada y la retorno
+    if (indiceFin > 0) {
+      for (let i = indiceFin; i <= cadena.length - 1; i++) {
+        rightPart += cadena[i];
+      }
     }
-    return leftPart + newValue + rightPart;
+    if (leftPart !== undefined && leftPart !== '') {
+      newCadena = leftPart + newValue;
+      if (rightPart !== undefined && rightPart !== '') {
+        newCadena += rightPart;
+      }
+    } else {
+      if (rightPart !== undefined && rightPart !== '') {
+        newCadena = newValue + rightPart;
+      } else {
+        newCadena = newValue;
+      }
+    }
+    return newCadena;
   }
 }
