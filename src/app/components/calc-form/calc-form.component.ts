@@ -5,7 +5,7 @@ import { NumbersI } from './../../interfaces/numbers.interface';
 @Component({
   selector: 'app-calc-form',
   templateUrl: './calc-form.component.html',
-  styleUrls: ['./calc-form.component.css']
+  styleUrls: []
 })
 export class CalcFormComponent implements OnInit {
 
