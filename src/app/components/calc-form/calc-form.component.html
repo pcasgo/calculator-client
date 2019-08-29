@@ -1,4 +1,7 @@
 <form>
+  <br>
+  <title>Calculadora</title>
+  <h3>Calculadora</h3>
   <div class="form-row col-md-6">
     <div class="form-group col-md-6">
       <label for="inputOne">Número 1</label>
@@ -12,18 +15,18 @@
   <div class="form-group col-md-6">
     <label for="inputResult">Resultado</label>
     <input type="number" class="form-control" id="inputResult" value={{result.result}} readonly>
-  </div>
-  <div class="form-group col-md-6">
-    <div class="container col-md-6">
+    <br>
+    <div class="container">
       <div class="row">
         <div class="col-sm">
-          <button type="button" (click)="add(inputOne.value, inputTwo.value)" class="btn btn-info">SUMAR</button>
+          <button type="button" (click)="add(inputOne.value, inputTwo.value)" class="btn btn-info sm">SUMAR</button>
         </div>
         <div class="col-sm">
           <button type="button" (click)="substract(inputOne.value, inputTwo.value)" class="btn btn-info">RESTAR</button>
         </div>
         <div class="col-sm">
-          <button type="button" (click)="multiply(inputOne.value, inputTwo.value)" class="btn btn-info">MULTIPLICAR</button>
+          <button type="button" (click)="multiply(inputOne.value, inputTwo.value)"
+            class="btn btn-info">MULTIPLICAR</button>
         </div>
         <div class="col-sm">
           <button type="button" (click)="divide(inputOne.value, inputTwo.value)" class="btn btn-info">DIVIDIR</button>
