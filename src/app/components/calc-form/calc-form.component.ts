@@ -36,20 +36,58 @@ export class CalcFormComponent implements OnInit {
 
   }
 
+  async add(one, two) {
+    const dto = new NumbersI();
+    dto.numberOne = one;
+    dto.numberTwo = two;
+    const newValue = await this.calcFormService.add(dto);
+    this.result = newValue;
+    console.log(newValue);
+  }
+
+  async substract(one, two) {
+    const dto = new NumbersI();
+    dto.numberOne = one;
+    dto.numberTwo = two;
+    const newValue = await this.calcFormService.substract(dto);
+    this.result = newValue;
+    console.log(newValue);
+  }
+
+  async divide(one, two) {
+    const dto = new NumbersI();
+    dto.numberOne = one;
+    dto.numberTwo = two;
+    const newValue = await this.calcFormService.divide(dto);
+    this.result = newValue;
+    console.log(newValue);
+  }
+
+  async multiply(one, two) {
+    const dto = new NumbersI();
+    dto.numberOne = one;
+    dto.numberTwo = two;
+    const newValue = await this.calcFormService.multiply(dto);
+    this.result = newValue;
+    console.log('this.result: ', this.result);
+  }
+
+
   calculate() {
-    // this.sendData(this.keys);
-    this.result = '3-2*6/9*4+8/2-6*7';
-    console.log('cadena inicial: ', this.result);
-    while (this.result.match(this.reGexDivMul) !== null) {
-      // console.log('ejecutando: ', this.result);
-      this.result = this.findDivAndMul(this.result);
-    }
-    console.log('cadena final div y mul: ', this.result);
+
+    // this.result = '3-2*6/9*4+8/2-6*7';
+    // console.log('cadena inicial: ', this.result);
+    // while (this.result.match(this.reGexDivMul) !== null) {
+    //   // console.log('ejecutando: ', this.result);
+    //   this.result = this.findDivAndMul(this.result);
+    // }
+    // console.log('cadena final div y mul: ', this.result);
     // while (this.result.match(this.reGexAddSub) !== null) {
     //   console.log('sumas y restas: ', this.result);
     //   this.result = this.findAddAndSub(this.result);
     // }
     // console.log('cadena final add y sub: ', this.result);
+    this.result = '-2.333333333333333+4-42';
     this.findAddAndSub(this.result);
   }
 
@@ -57,20 +95,25 @@ export class CalcFormComponent implements OnInit {
     let newCadena = '';
     let newValue = '';
     let operation = '';
+    let neg = '';
+    let prueba = '';
     console.log('AQUI !!!!: ', cadena);
+    // console.log('Aaaaaa: ', (cadena.match(/-/g)).length);
     for (let i = 0; i <= cadena.length - 1; i++) {
-      if (isNaN(cadena[i]) && cadena[i] === '+' || cadena[i] === '-') {
+      if (isNaN(cadena[i]) && cadena[i] === '+' || cadena[i] === '-' && i > 0) {
+        //console.log('dvdv: ', i + '  caracter: ' + cadena[i]);
         operation = cadena[i];
         // // Busco la primera operacion que sea de tipo: [+ o -]
         const dto = new NumbersI();
         dto.numberOne = this.obtienePrimerNumeroOperacion(cadena, cadena[i]);
+        dto.numberOne = (dto.numberOne === '' ? '0' : dto.numberOne);
         dto.numberTwo = this.obtieneSegundoNumeroOperacion(cadena, cadena[i]);
-        // // tslint:disable-next-line: no-eval
-        console.log('eval: ', dto.numberOne + operation + dto.numberTwo);
-        // // tslint:disable-next-line: no-eval
+        dto.numberTwo = (dto.numberTwo === '' ? '0' : dto.numberTwo);
+        console.log('evalllll: ', dto.numberOne + operation + dto.numberTwo);
+        // tslint:disable-next-line: no-eval
         newValue = eval(dto.numberOne + operation + dto.numberTwo);
         console.log('newValue: ', newValue);
-        // // newValue = this.calculateOperation(dto, operation);
+        // newValue = this.calculateOperation(dto, operation);
         newCadena = this.actualizaCadena(this.primeraParteCadena, this.segundaParteCadena, newValue, cadena);
         this.primeraParteCadena = 0;
         this.segundaParteCadena = 0;
@@ -86,31 +129,31 @@ export class CalcFormComponent implements OnInit {
     switch (oper) {
       case '+':
         return new Promise((resolve, reject) => {
-          this.calcFormService.add(dto).subscribe(
-            res => resolve(res),
-            err => reject(err)
-          );
+          // this.calcFormService.add(dto).subscribe(
+          //   res => resolve(res),
+          //   err => reject(err)
+          // );
         });
       case '-':
         return new Promise((resolve, reject) => {
-          this.calcFormService.substract(dto).subscribe(
-            res => resolve(res),
-            err => reject(err)
-          );
+          // this.calcFormService.substract(dto).subscribe(
+          //   res => resolve(res),
+          //   err => reject(err)
+          // );
         });
       case '/':
         return new Promise((resolve, reject) => {
-          this.calcFormService.divide(dto).subscribe(
-            res => resolve(res),
-            err => reject(err)
-          );
+          // this.calcFormService.divide(dto).subscribe(
+          //   res => resolve(res),
+          //   err => reject(err)
+          // );
         });
       case '*':
         return new Promise((resolve, reject) => {
-          this.calcFormService.multiply(dto).subscribe(
-            res => resolve(res),
-            err => reject(err)
-          );
+          // this.calcFormService.multiply(dto).subscribe(
+          //   res => resolve(res),
+          //   err => reject(err)
+          // );
         });
     }
   }
@@ -149,19 +192,8 @@ export class CalcFormComponent implements OnInit {
   }
 
   obtienePrimerNumeroOperacion(cadena, indice) {
+    console.log('indice: ', indice);
     let one = '';
-    // if (indice === '-' && cadena.indexOf(indice) === 0) {
-    //   for (let i = cadena.indexOf(indice) + 1; i <= cadena.length - 1; i++) {
-    //     if (isNaN(cadena[i]) && cadena[i] !== '.' && cadena[i] !== ',') {
-    //       this.primeraParteCadena = i;
-    //       break;
-    //     } else {
-    //       // Si es numero voy guardando como parte de la operacion
-    //       one += cadena[i];
-    //     }
-    //   }
-    //   one = indice;
-    // } else {
     for (let i = cadena.indexOf(indice) - 1; i >= 0; i--) {
       // Si no es numero corto el recorrido y guardo la primera parte de la operacion
       if (isNaN(cadena[i]) && cadena[i] !== '.' && cadena[i] !== ',') {

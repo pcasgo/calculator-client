@@ -1,29 +1,29 @@
 import { NumbersI } from './../interfaces/numbers.interface';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+
 @Injectable({
   providedIn: 'root'
 })
 export class CalcFormService {
 
-  BASE_URL = 'https://calculator-back.herokuapp.com';
+  BASE_URL = 'https://prueba-nest.herokuapp.com';
   constructor(private http: HttpClient) { }
 
-  add(numbers: NumbersI): Observable<number> {
-    return this.http.post<any>(`${this.BASE_URL}/add`, numbers);
+  async add(numbers: NumbersI): Promise<string> {
+    return await this.http.post<string>(`${this.BASE_URL}/add`, numbers).toPromise();
   }
 
-  substract(numbers: NumbersI): Observable<number> {
-    return this.http.post<number>(`${this.BASE_URL}/substract`, numbers);
+  async substract(numbers: NumbersI): Promise<string> {
+    return this.http.post<string>(`${this.BASE_URL}/substract`, numbers).toPromise();
   }
 
-  divide(numbers: NumbersI): Observable<number>{
-    return this.http.post<number>(`${this.BASE_URL}/divide`, numbers);
+  async divide(numbers: NumbersI): Promise<string> {
+    return this.http.post<string>(`${this.BASE_URL}/divide`, numbers).toPromise();
 
   }
 
-  multiply(numbers: NumbersI): Observable<number> {
-    return this.http.post<number>(`${this.BASE_URL}/multiply`, numbers);
+  async multiply(numbers: NumbersI): Promise<string> {
+    return await this.http.post<string>(`${this.BASE_URL}/multiply`, numbers).toPromise();
   }
 }

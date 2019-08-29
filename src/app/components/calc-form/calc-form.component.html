@@ -1,4 +1,4 @@
-<div class="container text-center" id="calc">
+<!-- <div class="container text-center" id="calc">
   <div class="calcBG text-center">
     <div class="row">
       <small>Calculadora</small>
@@ -40,4 +40,15 @@
       <button id="equals" type="button" class="btn btn-success" (click)="calculate()">=</button>
     </div>
   </div>
-</div>
+</div> -->
+
+
+Núm 1: <input #num1 type="number" value={{one}}/>
+Núm2: <input #num2 type="number" value={{two}}/>
+<br /><br />
+resultado :{{result.result}}
+
+<input type="button" value="SUMAR" (click)="add(num1.value, num2.value)" /><br />
+<input type="button" value="RESTAR" (click)="substract(num1.value, num2.value)" /><br />
+<input type="button" value="MULTIPLICAR" (click)="multiply(num1.value, num2.value)"/><br />
+<input type="button" value="DIVIDIR" (click)="divide(num1.value, num2.value)"/>><br />
